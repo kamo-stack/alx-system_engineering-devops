@@ -5,4 +5,3 @@
 #
 #msg = SENDER + "," + RECEIVER + "," + FLAGS
 #puts msg
-
