@@ -1,48 +1,29 @@
 #!/usr/bin/python3
 """
-Returns to-do list information for a given employee ID.
-
-This script takes an employee ID as a command-line argument and fetches
-the corresponding user information and to-do list from the JSONPlaceholder API.
-It then prints the tasks completed by the employee.
+Returns information about his/her todo list progress
 """
+
 
 import requests
 import sys
 
 
 if __name__ == "__main__":
-    # Base URL for the JSONPlaceholder API
-    url = "https://jsonplaceholder.typicode.com/"
+    """
+    code process:
+     - API Base URL
+     - Gets user data
+     - Gets todos for the specified user
+     - Extract completed tasks
+     - Print info about the employee's todo list progress
+     - Print titles of tasks completed
+    """
+    api_url = "https://jsonplaceholder.typicode.com/"
+    user = requests.get(api_url + "users/{}".format(sys.argv[1])).json()
+    todos = requests.get(api_url + "todos",
+                         params={"userId": sys.argv[1]}).json()
+    done = [u.get("title") for u in todos if u.get("completed") is True]
 
-    # Get the employee information using the provided employee ID
-    employee_id = sys.argv[1]
-    user = requests.get(url + "users/{}".format(employee_id)).json()
-
-    # Get the to-do list for the employee using the provided employee ID
-    params = {"userId": employee_id}
-    todos = requests.get(url + "todos", params).json()
-    #!/usr/bin/python3
-"""
-Returns to-do list information for a given employee ID.
-
-This script takes an employee ID as a command-line argument and fetches
-the corresponding user information and to-do list from the JSONPlaceholder API.
-It then prints the tasks completed by the employee.
-"""
-
-import requests
-import sys
-
-
-if __name__ == "__main__":
-    # Base URL for the JSONPlaceholder API
-    url = "https://jsonplaceholder.typicode.com/"
-
-    # Get the employee information using the provided employee ID
-    employee_id = sys.argv[1]
-    user = requests.get(url + "users/{}".format(employee_id)).json()
-
-    # Get the to-do list for the employee using the provided employee ID
-    params = {"userId": employee_id}
-    todos = requests.get(url + "todos", params).json()
+    print("Employee {} is done with tasks({}/{}):".format(
+        user.get("name"), len(done), len(todos)))
+    [print("\t {}".format(v)) for v in done]
